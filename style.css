@@ -1,4 +1,83 @@
-body { font-family: Arial, sans-serif; margin: 20px; }
-table { border-collapse: collapse; width: 100%; }
-th, td { border: 1px solid #777; padding: 8px; text-align: left; }
-th { background: #004aad; color: white; }
+/* ========== GLOBAL STYLE ========== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: #f4f7fb;
+    color: #2c3e50;
+    line-height: 1.6;
+}
+
+/* ========== NAVBAR ========== */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 50px;
+    background: #005BBB;
+    color: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.menu {
+    display: flex;
+    gap: 25px;
+    list-style: none;
+}
+
+.menu li a {
+    color: white;
+    text-decoration: none;
+    font-weight: 400;
+    transition: 0.3s;
+}
+
+.menu li a:hover {
+    color: #FFD43B;
+}
+
+/* ========== HERO ========== */
+.hero {
+    text-align: center;
+    padding: 80px 20px;
+    background: linear-gradient(rgba(0, 91, 187, 0.85), rgba(0, 91, 187, 0.85)), url('https://source.unsplash.com/1600x900/?school,books');
+    background-size: cover;
+    color: white;
+}
+
+.hero h1 {
+    font-size: 38px;
+    font-weight: 600;
+}
+
+.hero p {
+    font-size: 18px;
+    margin-top: 8px;
+}
+
+/* ========== RESPONSIVE ========== */
+@media(max-width: 768px) {
+    .navbar {
+        padding: 15px 25px;
+    }
+    .menu {
+        gap: 12px;
+    }
+    .hero h1 {
+        font-size: 30px;
+    }
+}
