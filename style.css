@@ -81,3 +81,57 @@ body {
         font-size: 30px;
     }
 }
+
+/* ========== DASHBOARD ========== */
+.dashboard {
+    padding: 50px 20px;
+    text-align: center;
+}
+
+.dashboard h2 {
+    font-size: 28px;
+    margin-bottom: 30px;
+    color: #003f7f;
+}
+
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 25px;
+    max-width: 900px;
+    margin: auto;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.card i {
+    font-size: 35px;
+    color: #005BBB;
+    margin-bottom: 12px;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+}
+
+/* ========== FOOTER ========== */
+footer {
+    margin-top: 60px;
+    background: #003f7f;
+    color: white;
+    text-align: center;
+    padding: 25px;
+}
+
+footer img {
+    width: 70px;
+    margin-bottom: 10px;
+}
