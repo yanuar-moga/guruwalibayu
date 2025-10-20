@@ -1,17 +1,401 @@
-<!DOCTYPE html>
+<!--
+Aplikasi "Guru Wali - Pak Bayu" (single-file demo)
+File: index.html
+How to deploy to GitHub Pages:
+1. Create a repository named `guruwalibayu` on GitHub (public).
+2. Add this index.html to the repo root (commit).
+3. In repo Settings > Pages, choose branch `main` (root) and save.
+4. Visit: https://yanuar-moga.github.io/guruwalibayu
+
+Notes:
+- This is a front-end demo using localStorage for data (no backend).
+- Features included: search, student list, Curhat form, Pembinaan form, Komunikasi Orang Tua form, Laporan Rekap (export CSV), simple notifications.
+- For production/back-end, integrate with server or Google Sheets / Firebase.
+-->
+
+<!doctype html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aplikasi Guru Wali - Pak Bayu</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Guru Wali 7H — Yanuar Bayu Triyono</title>
+  <meta name="description" content="Aplikasi Guru Wali Kelas 7H — Pak Yanuar Bayu Triyono" />
+
+  <link rel="icon" href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgYCPiGhuoDL1mp18rPAMUCt98ADIyg7C297Bx4H53sxM12CtZE89tThO6KUe14s5cR0p6z8DrFQCHUJNXa1tXuFN45DJcNgU0uOW7D00l9cdkRDHUpyHFOfcHtg91R01_CXpPKKXEVS4orocyah8Z_gel0EAg6jrXno_84uYR6UDlxzpmHXOhby8Z0vyQ/s3558/LOGO%20SMP%201%20MOGA.png" />
+
+  <style>
+    :root{
+      --blue-900:#082B5D;
+      --blue-700:#0E4AA3;
+      --blue-500:#1976D2;
+      --accent:#FF8A00;
+      --glass: rgba(255,255,255,0.06);
+      --muted:#7a8aa3;
+      --card-bg: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    }
+    *{box-sizing:border-box}
+    body{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; margin:0; background: linear-gradient(180deg,#0b2a55 0%, #072146 60%); color:#eef6ff; min-height:100vh}
+    .app{display:flex; gap:20px; padding:28px; max-width:1100px; margin:0 auto}
+
+    /* SIDEBAR */
+    .sidebar{width:260px; background:rgba(255,255,255,0.03); border-radius:12px; padding:18px}
+    .brand{display:flex; gap:12px; align-items:center}
+    .brand img{width:56px; height:56px; border-radius:8px; object-fit:cover; border:2px solid rgba(255,255,255,0.06)}
+    .brand h1{font-size:18px; margin:0; line-height:1}
+    .brand p{margin:0; font-size:12px; color:var(--muted)}
+
+    .profile{margin-top:14px; padding:12px; background:var(--glass); border-radius:10px}
+    .profile h3{margin:0 0 4px 0}
+    .profile small{color:var(--muted)}
+
+    nav{margin-top:14px}
+    .nav-item{display:flex; align-items:center; gap:10px; padding:10px; border-radius:8px; cursor:pointer}
+    .nav-item:hover{background:rgba(255,255,255,0.02)}
+    .nav-item.active{background:linear-gradient(90deg,var(--blue-700),var(--blue-500)); box-shadow: 0 6px 20px rgba(25,118,210,0.08)}
+
+    /* MAIN */
+    .main{flex:1}
+    .header{display:flex; align-items:center; justify-content:space-between; gap:12px}
+    .header .title{font-size:20px}
+    .card{background:var(--card-bg); padding:16px; border-radius:12px; margin-top:14px; color:inherit}
+
+    .controls{display:flex; gap:8px; flex-wrap:wrap}
+    .btn{background:var(--blue-500); border:none; color:white; padding:8px 12px; border-radius:8px; cursor:pointer}
+    .btn.ghost{background:transparent; border:1px solid rgba(255,255,255,0.06)}
+    .btn.warn{background:var(--accent); color:#06213a}
+
+    .search{padding:8px 12px; border-radius:10px; border:none; background:rgba(255,255,255,0.03); color:inherit}
+
+    table{width:100%; border-collapse:collapse; margin-top:12px}
+    th,td{padding:10px; text-align:left; border-bottom:1px dashed rgba(255,255,255,0.03)}
+    th{font-size:13px; color:#dbefff}
+
+    .gender{font-size:12px; color:var(--muted)}
+
+    /* responsive */
+    @media(max-width:880px){.app{flex-direction:column;padding:16px}.sidebar{width:100%}}
+
+    /* modal */
+    .modal-backdrop{position:fixed; inset:0; background:rgba(8,11,20,0.6); display:none; align-items:center; justify-content:center; z-index:40}
+    .modal{width:640px; max-width:95%; background:linear-gradient(180deg,#0f2b56,#08213d); padding:16px; border-radius:10px}
+    .form-row{display:flex; gap:10px; margin-bottom:10px}
+    .form-row input, .form-row textarea, select{flex:1; padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:inherit}
+    .small{font-size:12px; color:var(--muted)}
+
+    footer{margin-top:18px; text-align:center; color:var(--muted); font-size:13px}
+
+    /* tiny helpers */
+    .pill{display:inline-block;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,0.03); font-size:12px}
+  </style>
 </head>
 <body>
-  <h1>Daftar Guru Wali dan Siswa</h1>
-  <table>
-    <tr><th>Nama Siswa</th><th>Guru Wali</th></tr>
-    <tr><td>AHMAD AL IRSAD</td><td>Pak Reki</td></tr>
-    <tr><td>ATINA AZZAH HAYATI</td><td>Pak ...</td></tr>
-  </table>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgYCPiGhuoDL1mp18rPAMUCt98ADIyg7C297Bx4H53sxM12CtZE89tThO6KUe14s5cR0p6z8DrFQCHUJNXa1tXuFN45DJcNgU0uOW7D00l9cdkRDHUpyHFOfcHtg91R01_CXpPKKXEVS4orocyah8Z_gel0EAg6jrXno_84uYR6UDlxzpmHXOhby8Z0vyQ/s3558/LOGO%20SMP%201%20MOGA.png" alt="logo" />
+        <div>
+          <h1>SMP Negeri 1 Moga</h1>
+          <p class="small">Aplikasi Guru Wali — 7H</p>
+        </div>
+      </div>
+
+      <div class="profile">
+        <h3>Yanuar Bayu Triyono</h3>
+        <small>Email: <a href="mailto:yanuar.bayu62@guru.smp.belajar.id" style="color:inherit">yanuar.bayu62@guru.smp.belajar.id</a></small>
+        <p class="small" style="margin-top:8px">Wali Kelas 7H — SMP Negeri 1 Moga</p>
+      </div>
+
+      <nav>
+        <div class="nav-item active" data-section="daftar">📋 Daftar Siswa</div>
+        <div class="nav-item" data-section="curhat">🗣 Curhat</div>
+        <div class="nav-item" data-section="pembinaan">📝 Pembinaan</div>
+        <div class="nav-item" data-section="orangtua">📞 Komunikasi Orang Tua</div>
+        <div class="nav-item" data-section="laporan">📊 Laporan Rekap</div>
+      </nav>
+
+      <footer>
+        <div class="pill">Kelas 7H • 20 siswa</div>
+      </footer>
+    </aside>
+
+    <main class="main">
+      <div class="header">
+        <div>
+          <div class="title">Dashboard Guru Wali — Kelas 7H</div>
+          <div class="small">Selamat datang, Pak Yanuar — pantau & catat perkembangan siswa dengan mudah.</div>
+        </div>
+
+        <div class="controls">
+          <input id="search" class="search" placeholder="Cari nama siswa..." />
+          <button class="btn" id="btn-export">Export CSV</button>
+          <button class="btn ghost" id="btn-new-curhat">+ Curhat</button>
+        </div>
+      </div>
+
+      <!-- DAFTAR SISWA -->
+      <section id="section-daftar" class="card" style="display:block">
+        <h2>Daftar Siswa Binaan — 7H</h2>
+        <table id="tbl-siswa" aria-live="polite">
+          <thead>
+            <tr><th>No</th><th>Nama Siswa</th><th>JK</th><th>Keterangan</th></tr>
+          </thead>
+          <tbody>
+            <!-- rows injected by JS -->
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Curhat -->
+      <section id="section-curhat" class="card" style="display:none">
+        <h2>Curhat Siswa</h2>
+        <p class="small">Catatan pribadi siswa — dapat digunakan untuk menulis keluhkesah, kebutuhan emosional, atau pengingat follow-up.</p>
+        <div style="margin-top:12px">
+          <button class="btn" id="open-curhat">Tulis Curhat Baru</button>
+          <div id="curhat-list" style="margin-top:12px"></div>
+        </div>
+      </section>
+
+      <!-- Pembinaan -->
+      <section id="section-pembinaan" class="card" style="display:none">
+        <h2>Pembinaan & Intervensi</h2>
+        <p class="small">Catat rencana pembinaan, tindak lanjut, dan hasilnya. Gunakan untuk dokumentasi RPP / konseling kecil.</p>
+        <div style="margin-top:12px">
+          <button class="btn" id="open-pembinaan">Tambah Pembinaan</button>
+          <div id="pembinaan-list" style="margin-top:12px"></div>
+        </div>
+      </section>
+
+      <!-- Komunikasi Orang Tua -->
+      <section id="section-orangtua" class="card" style="display:none">
+        <h2>Komunikasi Orang Tua</h2>
+        <p class="small">Simpan pesan dan jadwal komunikasi ke orang tua (bisa disalin ke WA/Email).</p>
+        <button class="btn" id="open-komunikasi">Buat Pesan Baru</button>
+        <div id="komunikasi-list" style="margin-top:12px"></div>
+      </section>
+
+      <!-- Laporan -->
+      <section id="section-laporan" class="card" style="display:none">
+        <h2>Laporan Rekap</h2>
+        <p class="small">Ringkasan data curhat, pembinaan, dan komunikasi. Gunakan tombol Export CSV untuk mengunduh semua catatan.</p>
+        <div id="rekap-summaries" style="margin-top:12px"></div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- modal backdrop -->
+  <div id="modal" class="modal-backdrop">
+    <div class="modal">
+      <div id="modal-content"></div>
+      <div style="text-align:right;margin-top:8px">
+        <button class="btn ghost" id="modal-close">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- DATA: siswa (dari user) ---
+    const initialStudents = [
+      "FATHAN GUSTOMY L VII-H",
+      "IBTISAM ARIFA P VII-H",
+      "INAYATI AENA P VII-H",
+      "IQBAL WICAKSONO L VII-H",
+      "IRMA NOVIANA P VII-H",
+      "MELIYA EKA NUR AFRIANI P VII-H",
+      "MUHAMAD HABIBI L VII-H",
+      "MUHAMAD REHAN FARDAN L VII-H",
+      "MUHAMMAD AFKARUL ISLAM L VII-H",
+      "MUHAMMAD FAIQ IMAMMILLAH L VII-H",
+      "MUHAMMAD IZZA KURNIAWAN L VII-H",
+      "MUHAMMAD SYAUQI ASYROFAL KHABIBI L VII-H",
+      "MUHAMMAD ZIYYA AHLUNNAZA",
+      "MUHAMMAD ZULMI FAHKRI L VII-H",
+      "MUKHMAD BAYU MAULID L VII-H",
+      "MUTIARA SILMI P VII-H",
+      "NAFISA IKLIMA AZZAHRA P VII-H",
+      "NASY'ATUL MAHYA P VII-H",
+      "NAUFAL HISAM PRATAMA L VII-H",
+      "NUR WANIFA P VII-H"
+    ];
+
+    // LocalStorage keys
+    const LS = {
+      students: 'gw_students_v1',
+      curhat: 'gw_curhat_v1',
+      pembinaan: 'gw_pembinaan_v1',
+      komunikasi: 'gw_komunikasi_v1'
+    }
+
+    // Initialize data
+    function loadOrInit(key, initial){
+      const raw = localStorage.getItem(key);
+      if(raw) return JSON.parse(raw);
+      localStorage.setItem(key, JSON.stringify(initial));
+      return initial;
+    }
+
+    const students = loadOrInit(LS.students, initialStudents);
+    let curhats = loadOrInit(LS.curhat, []);
+    let pembinaans = loadOrInit(LS.pembinaan, []);
+    let komunikasis = loadOrInit(LS.komunikasi, []);
+
+    // UI refs
+    const tblBody = document.querySelector('#tbl-siswa tbody');
+    const search = document.getElementById('search');
+
+    function renderStudents(filter=''){
+      tblBody.innerHTML = '';
+      const list = students.filter(s => s.toLowerCase().includes(filter.toLowerCase()));
+      list.forEach((name, i) =>{
+        const tr = document.createElement('tr');
+        const jk = (name.includes(' P ')) ? 'P' : (name.includes(' L ') ? 'L' : '-');
+        tr.innerHTML = `
+          <td>${i+1}</td>
+          <td><strong>${name}</strong></td>
+          <td class="gender">${jk}</td>
+          <td><button class="btn ghost" onclick="openQuick('${encodeURIComponent(name)}')">Detail</button></td>
+        `;
+        tblBody.appendChild(tr);
+      });
+    }
+
+    function openQuick(nameEnc){
+      const name = decodeURIComponent(nameEnc);
+      showModal(`<h3>${name}</h3>
+        <p class='small'>Catatan singkat:</p>
+        <textarea id='quick-note' style='width:100%;min-height:120px;padding:8px;border-radius:8px;background:transparent;color:inherit;border:1px solid rgba(255,255,255,0.04)'></textarea>
+        <div style='text-align:right;margin-top:8px'>
+          <button class='btn' onclick="saveQuick('${encodeURIComponent(name)}')">Simpan</button>
+        </div>
+      `);
+      const stored = JSON.parse(localStorage.getItem('gw_quick_notes_v1')||'{}');
+      const ta = document.getElementById('quick-note');
+      if(stored[name]) ta.value = stored[name];
+    }
+    function saveQuick(nameEnc){
+      const name = decodeURIComponent(nameEnc);
+      const ta = document.getElementById('quick-note');
+      const stored = JSON.parse(localStorage.getItem('gw_quick_notes_v1')||'{}');
+      stored[name] = ta.value;
+      localStorage.setItem('gw_quick_notes_v1', JSON.stringify(stored));
+      hideModal();
+      toast('Catatan singkat disimpan');
+    }
+
+    // Modal helpers
+    const modal = document.getElementById('modal');
+    const modalContent = document.getElementById('modal-content');
+    document.getElementById('modal-close').addEventListener('click', hideModal);
+    function showModal(html){ modalContent.innerHTML = html; modal.style.display = 'flex'; }
+    function hideModal(){ modal.style.display = 'none'; modalContent.innerHTML = '' }
+
+    // Toast
+    function toast(msg){
+      const d = document.createElement('div');
+      d.textContent = msg; d.style.position='fixed'; d.style.right='18px'; d.style.bottom='18px'; d.style.padding='10px 14px'; d.style.background='rgba(0,0,0,0.6)'; d.style.borderRadius='8px'; d.style.color='white'; d.style.zIndex=60;
+      document.body.appendChild(d);
+      setTimeout(()=> d.style.opacity=0,1800); setTimeout(()=> d.remove(),2400);
+    }
+
+    // Sections nav
+    document.querySelectorAll('.nav-item').forEach(el=> el.addEventListener('click', ()=>{
+      document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+      el.classList.add('active');
+      const sec = el.dataset.section;
+      document.querySelectorAll('main .card, main section').forEach(s=> s.style.display='none');
+      document.getElementById('section-'+sec).style.display='block';
+    }));
+
+    // Search
+    search.addEventListener('input', ()=> renderStudents(search.value));
+
+    // Export CSV (all data)
+    function exportCSV(){
+      const rows = [];
+      rows.push(['Tipe','Nama','Tanggal','Catatan']);
+      curhats.forEach(c=> rows.push(['Curhat', c.nama, c.date, c.text]));
+      pembinaans.forEach(p=> rows.push(['Pembinaan', p.nama, p.date, p.note]));
+      komunikasis.forEach(k=> rows.push(['Komunikasi', k.nama, k.date, k.msg]));
+      // also include quick notes
+      const quick = JSON.parse(localStorage.getItem('gw_quick_notes_v1')||'{}');
+      for(const k in quick) rows.push(['QuickNote', k, '', quick[k]]);
+      const csv = rows.map(r=> r.map(cell=> '"'+String(cell||'').replace(/"/g,'""')+'"').join(',')).join('\n');
+      const blob = new Blob([csv], {type:'text/csv'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'laporan_guruwali_7H.csv'; a.click(); URL.revokeObjectURL(url);
+      toast('Export CSV dimulai');
+    }
+
+    document.getElementById('btn-export').addEventListener('click', exportCSV);
+
+    // Curhat UI
+    function renderCurhats(){
+      const ctn = document.getElementById('curhat-list'); ctn.innerHTML='';
+      if(!curhats.length) ctn.innerHTML='<div class="small">Belum ada catatan curhat.</div>';
+      curhats.forEach((c,i)=>{
+        const div = document.createElement('div'); div.style.padding='8px'; div.style.borderBottom='1px dashed rgba(255,255,255,0.04)';
+        div.innerHTML = `<strong>${c.nama}</strong> <span class='small'>• ${c.date}</span><p class='small'>${c.text}</p><div style='text-align:right'><button class='btn ghost' onclick='editCurhat(${i})'>Edit</button> <button class='btn warn' onclick='deleteCurhat(${i})'>Hapus</button></div>`;
+        ctn.appendChild(div);
+      })
+    }
+    function openCurhatForm(){
+      showModal(`<h3>Tulis Curhat Baru</h3>
+        <div class='form-row'><select id='curhat-nama'>${students.map(s=>`<option value="${s}">${s}</option>`).join('')}</select></div>
+        <div class='form-row'><textarea id='curhat-text' placeholder='Tuliskan curhat...'></textarea></div>
+        <div style='text-align:right'><button class='btn' id='save-curhat'>Simpan</button></div>
+      `);
+      document.getElementById('save-curhat').addEventListener('click', ()=>{
+        const nama = document.getElementById('curhat-nama').value; const text = document.getElementById('curhat-text').value;
+        if(!text.trim()){ alert('Isi teks curhat'); return; }
+        const item = {nama, text, date: new Date().toLocaleString()};
+        curhats.unshift(item); localStorage.setItem(LS.curhat, JSON.stringify(curhats)); hideModal(); renderCurhats(); toast('Curhat tersimpan');
+      });
+    }
+    function editCurhat(i){
+      const c = curhats[i]; showModal(`<h3>Edit Curhat</h3><div class='form-row'><strong>${c.nama}</strong> <small>${c.date}</small></div><div class='form-row'><textarea id='edit-curhat-text'>${c.text}</textarea></div><div style='text-align:right'><button class='btn' id='save-edit'>Simpan</button></div>`);
+      document.getElementById('save-edit').addEventListener('click', ()=>{
+        curhats[i].text = document.getElementById('edit-curhat-text').value; localStorage.setItem(LS.curhat, JSON.stringify(curhats)); hideModal(); renderCurhats(); toast('Diubah');
+      })
+    }
+    function deleteCurhat(i){ if(!confirm('Hapus catatan ini?')) return; curhats.splice(i,1); localStorage.setItem(LS.curhat, JSON.stringify(curhats)); renderCurhats(); }
+
+    document.getElementById('open-curhat').addEventListener('click', openCurhatForm);
+    document.getElementById('btn-new-curhat').addEventListener('click', ()=>{ document.querySelector('[data-section="curhat"]').click(); openCurhatForm(); });
+
+    // Pembinaan UI
+    function renderPembinaan(){ const ctn = document.getElementById('pembinaan-list'); ctn.innerHTML=''; if(!pembinaans.length) ctn.innerHTML='<div class="small">Belum ada catatan pembinaan.</div>';
+      pembinaans.forEach((p,i)=>{ const div = document.createElement('div'); div.style.padding='8px'; div.style.borderBottom='1px dashed rgba(255,255,255,0.04)'; div.innerHTML = `<strong>${p.nama}</strong> <span class='small'>• ${p.date}</span><p class='small'>${p.note}</p><div style='text-align:right'><button class='btn ghost' onclick='editPembinaan(${i})'>Edit</button> <button class='btn warn' onclick='deletePembinaan(${i})'>Hapus</button></div>`; ctn.appendChild(div); }) }
+    function openPembinaanForm(){ showModal(`<h3>Tambah Pembinaan</h3><div class='form-row'><select id='pembinaan-nama'>${students.map(s=>`<option value="${s}">${s}</option>`).join('')}</select></div><div class='form-row'><textarea id='pembinaan-text' placeholder='Rencana/hasil pembinaan'></textarea></div><div style='text-align:right'><button class='btn' id='save-pembinaan'>Simpan</button></div>`);
+      document.getElementById('save-pembinaan').addEventListener('click', ()=>{ const nama = document.getElementById('pembinaan-nama').value; const note = document.getElementById('pembinaan-text').value; if(!note.trim()){ alert('Isi catatan pembinaan'); return; } const item={nama, note, date:new Date().toLocaleString()}; pembinaans.unshift(item); localStorage.setItem(LS.pembinaan, JSON.stringify(pembinaans)); hideModal(); renderPembinaan(); toast('Pembinaan tersimpan'); }) }
+    function editPembinaan(i){ const p = pembinaans[i]; showModal(`<h3>Edit Pembinaan</h3><div class='form-row'><strong>${p.nama}</strong> <small>${p.date}</small></div><div class='form-row'><textarea id='edit-pembinaan-text'>${p.note}</textarea></div><div style='text-align:right'><button class='btn' id='save-editp'>Simpan</button></div>`); document.getElementById('save-editp').addEventListener('click', ()=>{ pembinaans[i].note = document.getElementById('edit-pembinaan-text').value; localStorage.setItem(LS.pembinaan, JSON.stringify(pembinaans)); hideModal(); renderPembinaan(); toast('Diubah'); }) }
+    function deletePembinaan(i){ if(!confirm('Hapus pembinaan ini?')) return; pembinaans.splice(i,1); localStorage.setItem(LS.pembinaan, JSON.stringify(pembinaans)); renderPembinaan(); }
+    document.getElementById('open-pembinaan').addEventListener('click', openPembinaanForm);
+
+    // Komunikasi Orang Tua
+    function renderKomunikasi(){ const ctn = document.getElementById('komunikasi-list'); ctn.innerHTML=''; if(!komunikasis.length) ctn.innerHTML='<div class="small">Belum ada pesan komunikasi.</div>';
+      komunikasis.forEach((k,i)=>{ const div=document.createElement('div'); div.style.padding='8px'; div.style.borderBottom='1px dashed rgba(255,255,255,0.04)'; div.innerHTML=`<strong>${k.nama}</strong> <span class='small'>• ${k.date}</span><p class='small'>${k.msg}</p><div style='text-align:right'><button class='btn ghost' onclick='editKomunikasi(${i})'>Edit</button> <button class='btn warn' onclick='deleteKomunikasi(${i})'>Hapus</button></div>`; ctn.appendChild(div); }) }
+    function openKomunikasiForm(){ showModal(`<h3>Buat Pesan Komunikasi</h3><div class='form-row'><select id='kom-nama'>${students.map(s=>`<option value="${s}">${s}</option>`).join('')}</select></div><div class='form-row'><textarea id='kom-msg' placeholder='Isi pesan untuk orang tua (siap dicopy ke WA)'></textarea></div><div style='text-align:right'><button class='btn' id='save-kom'>Simpan</button></div>`);
+      document.getElementById('save-kom').addEventListener('click', ()=>{ const nama=document.getElementById('kom-nama').value; const msg=document.getElementById('kom-msg').value; if(!msg.trim()){ alert('Isi pesan'); return; } const it = {nama, msg, date:new Date().toLocaleString()}; komunikasis.unshift(it); localStorage.setItem(LS.komunikasi, JSON.stringify(komunikasis)); hideModal(); renderKomunikasi(); toast('Pesan tersimpan'); }) }
+    function editKomunikasi(i){ const k = komunikasis[i]; showModal(`<h3>Edit Pesan</h3><div class='form-row'><strong>${k.nama}</strong> <small>${k.date}</small></div><div class='form-row'><textarea id='edit-kom-msg'>${k.msg}</textarea></div><div style='text-align:right'><button class='btn' id='save-editk'>Simpan</button></div>`); document.getElementById('save-editk').addEventListener('click', ()=>{ komunikasis[i].msg = document.getElementById('edit-kom-msg').value; localStorage.setItem(LS.komunikasi, JSON.stringify(komunikasis)); hideModal(); renderKomunikasi(); toast('Diubah'); }) }
+    function deleteKomunikasi(i){ if(!confirm('Hapus pesan?')) return; komunikasis.splice(i,1); localStorage.setItem(LS.komunikasi, JSON.stringify(komunikasis)); renderKomunikasi(); }
+    document.getElementById('open-komunikasi').addEventListener('click', openKomunikasiForm);
+
+    // Rekap summary
+    function renderRekap(){ const ctn = document.getElementById('rekap-summaries'); ctn.innerHTML=''; const el = document.createElement('div'); el.innerHTML = `
+      <div class='small'>Total Curhat: ${curhats.length} • Total Pembinaan: ${pembinaans.length} • Total Komunikasi: ${komunikasis.length}</div>
+    `; ctn.appendChild(el);
+    }
+
+    // init
+    renderStudents(); renderCurhats(); renderPembinaan(); renderKomunikasi(); renderRekap();
+
+    // Export all when nav laporan requested
+    document.querySelector('[data-section="laporan"]').addEventListener('click', ()=>{
+      renderRekap();
+    });
+
+    // keyboard shortcut: / to focus search
+    window.addEventListener('keydown', (e)=>{ if(e.key==='/' && document.activeElement !== search){ e.preventDefault(); search.focus(); } });
+  </script>
 </body>
 </html>
