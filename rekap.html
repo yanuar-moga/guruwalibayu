@@ -1,0 +1,41 @@
+<h2>Rekap Curhat Siswa</h2>
+<table border="1" id="tabelCurhat">
+  <thead>
+    <tr>
+      <th>Timestamp</th>
+      <th>Nama</th>
+      <th>Kelas</th>
+      <th>Isi Curhat</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+const API_GET = "URL_API_KAMU"; // sama seperti POST
+
+async function loadCurhat() {
+  const res = await fetch(API_GET);
+  const data = await res.json();
+
+  // START FROM INDEX 1 (skip header sheet)
+  let tbody = document.querySelector("#tabelCurhat tbody");
+  tbody.innerHTML = "";
+
+  for (let i = 1; i < data.length; i++) {
+    let row = data[i];
+    let tr = `
+      <tr>
+        <td>${row[0]}</td>
+        <td>${row[1]}</td>
+        <td>${row[2]}</td>
+        <td>${row[3]}</td>
+      </tr>
+    `;
+    tbody.innerHTML += tr;
+  }
+}
+
+// load saat halaman dibuka
+loadCurhat();
+</script>
