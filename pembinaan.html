@@ -1,0 +1,40 @@
+<h2>Catatan Pembinaan</h2>
+<form id="pembinaanForm">
+  <label>Nama:</label>
+  <input type="text" id="pb_nama" required>
+
+  <label>Kelas:</label>
+  <input type="text" id="pb_kelas" value="VII-H" required>
+
+  <label>Target:</label>
+  <input type="text" id="pb_target" required>
+
+  <label>Catatan:</label>
+  <textarea id="pb_catatan" required></textarea>
+
+  <button type="submit">Simpan Pembinaan</button>
+</form>
+
+<p id="pb_status"></p>
+
+<script>
+document.getElementById("pembinaanForm").addEventListener("submit", async(e) => {
+  e.preventDefault();
+
+  let data = {
+    jenis: "pembinaan",
+    nama: document.getElementById("pb_nama").value,
+    kelas: document.getElementById("pb_kelas").value,
+    target: document.getElementById("pb_target").value,
+    catatan: document.getElementById("pb_catatan").value
+  };
+
+  const res = await fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify(data)
+  });
+
+  document.getElementById("pb_status").innerText = "✅ Catatan pembinaan tersimpan!";
+  document.getElementById("pembinaanForm").reset();
+});
+</script>
