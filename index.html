@@ -1,58 +1,142 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guru Wali Bayu</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Portal Wali Kelas VII-H — Yanuar Bayu</title>
+  <meta name="description" content="Portal Wali Kelas VII-H — SMP Negeri 1 Moga" />
+  <link rel="stylesheet" href="style.css" />
+  <!-- Font Awesome (ikon) -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <nav class="navbar">
-            <div class="logo">Guru Wali Bayu</div>
-            <ul class="menu">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Data Siswa</a></li>
-                <li><a href="#">Agenda</a></li>
-                <li><a href="#">Kontak</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <section class="hero">
-        <h1>Selamat Datang</h1>
-        <p>Portal Informasi Kelas & Guru Wali</p>
-        <p><b>Wali Kelas: Yanuar Bayu Triyono, S.I.Pust</b></p>
-    </section>
-<section class="dashboard">
-    <h2>Dashboard Wali Kelas VII-H</h2>
-    <div class="card-container">
-        <div class="card">
-            <i class="fa-solid fa-users"></i>
-            <h3>Data Siswa</h3>
-        </div>
-        <div class="card">
-            <i class="fa-solid fa-comments"></i>
-            <h3>Curhat Siswa</h3>
-        </div>
-        <div class="card">
-            <i class="fa-solid fa-book-open"></i>
-            <h3>Pembinaan</h3>
-        </div>
-        <div class="card">
-            <i class="fa-solid fa-people-roof"></i>
-            <h3>Orang Tua</h3>
-        </div>
+  <header class="navbar">
+    <div class="nav-left">
+      <img class="logo-sm" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgYCPiGhuoDL1mp18rPAMUCt98ADIyg7C297Bx4H53sxM12CtZE89tThO6KUe14s5cR0p6z8DrFQCHUJNXa1tXuFN45DJcNgU0uOW7D00l9cdkRDHUpyHFOfcHtg91R01_CXpPKKXEVS4orocyah8Z_gel0EAg6jrXno_84uYR6UDlxzpmHXOhby8Z0vyQ/s3558/LOGO%20SMP%201%20MOGA.png" alt="logo">
+      <div class="brand">
+        <div class="brand-title">SMP Negeri 1 Moga</div>
+        <div class="brand-sub">Portal Wali Kelas VII-H</div>
+      </div>
     </div>
-</section>
 
-<footer>
-    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgYCPiGhuoDL1mp18rPAMUCt98ADIyg7C297Bx4H53sxM12CtZE89tThO6KUe14s5cR0p6z8DrFQCHUJNXa1tXuFN45DJcNgU0uOW7D00l9cdkRDHUpyHFOfcHtg91R01_CXpPKKXEVS4orocyah8Z_gel0EAg6jrXno_84uYR6UDlxzpmHXOhby8Z0vyQ/s3558/LOGO%20SMP%201%20MOGA.png" alt="Logo">
-    <p><b>Yanuar Bayu Triyono, S.I.Pust</b><br>Wali Kelas VII-H – SMP Negeri 1 Moga</p>
-</footer>
+    <nav class="nav-right" aria-label="Main navigation">
+      <ul class="menu">
+        <li><a href="#" data-link="home" class="active">Home</a></li>
+        <li><a href="#" data-link="data">Data Siswa</a></li>
+        <li><a href="#" data-link="curhat">Curhat</a></li>
+        <li><a href="#" data-link="pembinaan">Pembinaan</a></li>
+        <li><a href="#" data-link="ortu">Orang Tua</a></li>
+        <li><a href="#" data-link="kontak">Kontak</a></li>
+      </ul>
+    </nav>
+  </header>
 
-    <script src="script.js"></script>
+  <main id="app">
+    <!-- HERO (H1 - versi santai) -->
+    <section class="hero">
+      <h1>Selamat Datang di Portal Kelas VII-H</h1>
+      <p class="hero-sub">SMP Negeri 1 Moga — Wali Kelas: <strong>Yanuar Bayu Triyono, S.I.Pust</strong></p>
+      <div class="hero-cta">
+        <button class="btn" data-action="goto" data-target="data">Lihat Data Siswa</button>
+        <button class="btn ghost" data-action="goto" data-target="curhat">Tulis Curhat</button>
+      </div>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section class="dashboard" id="section-home">
+      <h2>Dashboard Wali Kelas VII-H</h2>
+      <div class="card-container">
+        <div class="card" data-card="data">
+          <i class="fa-solid fa-users"></i>
+          <h3>Data Siswa</h3>
+          <p class="muted">Daftar & detail biodata</p>
+        </div>
+        <div class="card" data-card="curhat">
+          <i class="fa-solid fa-comments"></i>
+          <h3>Curhat Siswa</h3>
+          <p class="muted">Catatan pribadi & follow-up</p>
+        </div>
+        <div class="card" data-card="pembinaan">
+          <i class="fa-solid fa-book-open"></i>
+          <h3>Pembinaan</h3>
+          <p class="muted">Rencana & hasil intervensi</p>
+        </div>
+        <div class="card" data-card="ortu">
+          <i class="fa-solid fa-phone"></i>
+          <h3>Orang Tua</h3>
+          <p class="muted">Komunikasi & arsip pesan</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- DYNAMIC PANELS (SPA-style) -->
+    <section class="panel" id="panel-data" style="display:none">
+      <div class="panel-header">
+        <h2>Data Siswa — Kelas 7H</h2>
+        <input id="search" class="search" placeholder="Cari nama siswa..." />
+        <button class="btn" id="export-csv">Export CSV</button>
+      </div>
+      <div class="table-wrap">
+        <table id="tbl-siswa" class="tbl">
+          <thead><tr><th>No</th><th>Nama</th><th>JK</th><th>Kelas</th><th>Aksi</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-curhat" style="display:none">
+      <div class="panel-header">
+        <h2>Curhat Siswa</h2>
+        <button class="btn" id="btn-add-curhat">Tulis Curhat</button>
+      </div>
+      <div id="curhat-list" class="list-empty">Belum ada catatan curhat.</div>
+    </section>
+
+    <section class="panel" id="panel-pembinaan" style="display:none">
+      <div class="panel-header">
+        <h2>Pembinaan</h2>
+        <button class="btn" id="btn-add-pembinaan">Tambah Pembinaan</button>
+      </div>
+      <div id="pembinaan-list" class="list-empty">Belum ada pembinaan.</div>
+    </section>
+
+    <section class="panel" id="panel-ortu" style="display:none">
+      <div class="panel-header">
+        <h2>Komunikasi Orang Tua</h2>
+        <button class="btn" id="btn-add-kom">Buat Pesan</button>
+      </div>
+      <div id="kom-list" class="list-empty">Belum ada pesan komunikasi.</div>
+    </section>
+
+    <section class="panel" id="panel-kontak" style="display:none">
+      <div class="panel-header">
+        <h2>Kontak</h2>
+      </div>
+      <div class="card contact-card">
+        <p><strong>Wali Kelas:</strong> Yanuar Bayu Triyono</p>
+        <p><strong>Email:</strong> <a href="mailto:yanuar.bayu62@guru.smp.belajar.id">yanuar.bayu62@guru.smp.belajar.id</a></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgYCPiGhuoDL1mp18rPAMUCt98ADIyg7C297Bx4H53sxM12CtZE89tThO6KUe14s5cR0p6z8DrFQCHUJNXa1tXuFN45DJcNgU0uOW7D00l9cdkRDHUpyHFOfcHtg91R01_CXpPKKXEVS4orocyah8Z_gel0EAg6jrXno_84uYR6UDlxzpmHXOhby8Z0vyQ/s3558/LOGO%20SMP%201%20MOGA.png" alt="Logo" width="30" height="30">
+    <div>
+      <div class="f-title">Yanuar Bayu Triyono, S.I.Pust — Wali Kelas VII-H</div>
+      <div class="f-sub">SMP Negeri 1 Moga</div>
+    </div>
+  </footer>
+
+  <!-- Modal container (single) -->
+  <div id="modal" class="modal" style="display:none">
+    <div class="modal-card">
+      <div id="modal-body"></div>
+      <div class="modal-actions">
+        <button class="btn ghost" id="modal-close">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
-
