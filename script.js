@@ -1,4 +1,4 @@
-const API_URL = "PASTE_URL_WEBAPP_DI_SINI";
+const API_URL = "https://script.google.com/macros/s/AKfycbydG2BUKgHFc1G-S1u5aKJNW8NgUZ5K6GIv2ZArUhlhYHrwuAIjRB2lhe4mq277ig/exec";
 
 async function sendData(sheet, payload) {
   payload.sheet = sheet;
@@ -40,3 +40,4 @@ async function simpanKomunikasi() {
   await sendData("komunikasi", { nama, pesan, metode, dari });
   alert("Komunikasi tersimpan");
 }
+
