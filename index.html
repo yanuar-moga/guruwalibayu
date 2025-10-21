@@ -3,140 +3,173 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Portal Wali Kelas VII-H — Yanuar Bayu</title>
-  <meta name="description" content="Portal Wali Kelas VII-H — SMP Negeri 1 Moga" />
-  <link rel="stylesheet" href="style.css" />
-  <!-- Font Awesome (ikon) -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <title>Dashboard Wali Kelas — VII-H</title>
+
+  <!-- Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="navbar">
-    <div class="nav-left">
-      <img class="logo-sm" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgYCPiGhuoDL1mp18rPAMUCt98ADIyg7C297Bx4H53sxM12CtZE89tThO6KUe14s5cR0p6z8DrFQCHUJNXa1tXuFN45DJcNgU0uOW7D00l9cdkRDHUpyHFOfcHtg91R01_CXpPKKXEVS4orocyah8Z_gel0EAg6jrXno_84uYR6UDlxzpmHXOhby8Z0vyQ/s3558/LOGO%20SMP%201%20MOGA.png" alt="logo">
+  <div class="app">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
       <div class="brand">
-        <div class="brand-title">SMP Negeri 1 Moga</div>
-        <div class="brand-sub">Portal Wali Kelas VII-H</div>
-      </div>
-    </div>
-
-    <nav class="nav-right" aria-label="Main navigation">
-      <ul class="menu">
-        <li><a href="#" data-link="home" class="active">Home</a></li>
-        <li><a href="#" data-link="data">Data Siswa</a></li>
-        <li><a href="#" data-link="curhat">Curhat</a></li>
-        <li><a href="#" data-link="pembinaan">Pembinaan</a></li>
-        <li><a href="#" data-link="ortu">Orang Tua</a></li>
-        <li><a href="#" data-link="kontak">Kontak</a></li>
-      </ul>
-    </nav>
-  </header>
-
-  <main id="app">
-    <!-- HERO (H1 - versi santai) -->
-    <section class="hero">
-      <h1>Selamat Datang di Portal Kelas VII-H</h1>
-      <p class="hero-sub">SMP Negeri 1 Moga — Wali Kelas: <strong>Yanuar Bayu Triyono, S.I.Pust</strong></p>
-      <div class="hero-cta">
-        <button class="btn" data-action="goto" data-target="data">Lihat Data Siswa</button>
-        <button class="btn ghost" data-action="goto" data-target="curhat">Tulis Curhat</button>
-      </div>
-    </section>
-
-    <!-- DASHBOARD -->
-    <section class="dashboard" id="section-home">
-      <h2>Dashboard Wali Kelas VII-H</h2>
-      <div class="card-container">
-        <div class="card" data-card="data">
-          <i class="fa-solid fa-users"></i>
-          <h3>Data Siswa</h3>
-          <p class="muted">Daftar & detail biodata</p>
-        </div>
-        <div class="card" data-card="curhat">
-          <i class="fa-solid fa-comments"></i>
-          <h3>Curhat Siswa</h3>
-          <p class="muted">Catatan pribadi & follow-up</p>
-        </div>
-        <div class="card" data-card="pembinaan">
-          <i class="fa-solid fa-book-open"></i>
-          <h3>Pembinaan</h3>
-          <p class="muted">Rencana & hasil intervensi</p>
-        </div>
-        <div class="card" data-card="ortu">
-          <i class="fa-solid fa-phone"></i>
-          <h3>Orang Tua</h3>
-          <p class="muted">Komunikasi & arsip pesan</p>
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgYCPiGhuoDL1mp18rPAMUCt98ADIyg7C297Bx4H53sxM12CtZE89tThO6KUe14s5cR0p6z8DrFQCHUJNXa1tXuFN45DJcNgU0uOW7D00l9cdkRDHUpyHFOfcHtg91R01_CXpPKKXEVS4orocyah8Z_gel0EAg6jrXno_84uYR6UDlxzpmHXOhby8Z0vyQ/s3558/LOGO%20SMP%201%20MOGA.png" alt="logo">
+        <div>
+          <div class="brand-title">SMP Negeri 1 Moga</div>
+          <div class="brand-sub">Wali Kelas: Yanuar Bayu</div>
         </div>
       </div>
-    </section>
 
-    <!-- DYNAMIC PANELS (SPA-style) -->
-    <section class="panel" id="panel-data" style="display:none">
-      <div class="panel-header">
-        <h2>Data Siswa — Kelas 7H</h2>
-        <input id="search" class="search" placeholder="Cari nama siswa..." />
-        <button class="btn" id="export-csv">Export CSV</button>
-      </div>
-      <div class="table-wrap">
-        <table id="tbl-siswa" class="tbl">
-          <thead><tr><th>No</th><th>Nama</th><th>JK</th><th>Kelas</th><th>Aksi</th></tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </section>
+      <nav class="navmenu">
+        <button class="navbtn active" data-page="home"><span class="material-icons">dashboard</span> Home</button>
+        <button class="navbtn" data-page="curhat"><span class="material-icons">forum</span> Curhat</button>
+        <button class="navbtn" data-page="pembinaan"><span class="material-icons">assignment</span> Pembinaan</button>
+        <button class="navbtn" data-page="komunikasi"><span class="material-icons">phone</span> Komunikasi Ortu</button>
+        <button class="navbtn" data-page="rekap"><span class="material-icons">summarize</span> Rekap Per Siswa</button>
+      </nav>
 
-    <section class="panel" id="panel-curhat" style="display:none">
-      <div class="panel-header">
-        <h2>Curhat Siswa</h2>
-        <button class="btn" id="btn-add-curhat">Tulis Curhat</button>
+      <div class="sidebar-footer">
+        <small>yanuar.bayu62@guru.smp.belajar.id</small>
+        <a href="https://yanuar-moga.github.io/guruwalibayu/datasiswa.html" class="btn btn-sm btn-outline-light mt-2">Lihat Data Siswa</a>
       </div>
-      <div id="curhat-list" class="list-empty">Belum ada catatan curhat.</div>
-    </section>
+    </aside>
 
-    <section class="panel" id="panel-pembinaan" style="display:none">
-      <div class="panel-header">
-        <h2>Pembinaan</h2>
-        <button class="btn" id="btn-add-pembinaan">Tambah Pembinaan</button>
+    <!-- MAIN -->
+    <main class="main">
+      <!-- Topbar -->
+      <div class="topbar d-flex justify-content-between align-items-center">
+        <h4 id="pageTitle">Home</h4>
+        <div>
+          <button id="btnRefresh" class="btn btn-outline-primary btn-sm me-2"><span class="material-icons">refresh</span> Refresh</button>
+          <button id="btnLogout" class="btn btn-outline-secondary btn-sm">Keluar</button>
+        </div>
       </div>
-      <div id="pembinaan-list" class="list-empty">Belum ada pembinaan.</div>
-    </section>
 
-    <section class="panel" id="panel-ortu" style="display:none">
-      <div class="panel-header">
-        <h2>Komunikasi Orang Tua</h2>
-        <button class="btn" id="btn-add-kom">Buat Pesan</button>
-      </div>
-      <div id="kom-list" class="list-empty">Belum ada pesan komunikasi.</div>
-    </section>
+      <!-- PAGES -->
+      <section id="page-home" class="page active">
+        <div class="row g-3">
+          <div class="col-xl-4 col-md-6">
+            <div class="info-card">
+              <div class="info-head"><div>Jumlah Curhat</div><div id="countCurhat" class="badge bg-primary">0</div></div>
+              <div><canvas id="chartCurhat" height="120"></canvas></div>
+            </div>
+          </div>
+          <div class="col-xl-4 col-md-6">
+            <div class="info-card">
+              <div class="info-head"><div>Jumlah Pembinaan</div><div id="countPem" class="badge bg-primary">0</div></div>
+              <div><canvas id="chartPem" height="120"></canvas></div>
+            </div>
+          </div>
+          <div class="col-xl-4 col-md-12">
+            <div class="info-card">
+              <div class="info-head"><div>Komunikasi Ortu</div><div id="countKom" class="badge bg-primary">0</div></div>
+              <div><canvas id="chartKom" height="120"></canvas></div>
+            </div>
+          </div>
 
-    <section class="panel" id="panel-kontak" style="display:none">
-      <div class="panel-header">
-        <h2>Kontak</h2>
-      </div>
-      <div class="card contact-card">
-        <p><strong>Wali Kelas:</strong> Yanuar Bayu Triyono</p>
-        <p><strong>Email:</strong> <a href="mailto:yanuar.bayu62@guru.smp.belajar.id">yanuar.bayu62@guru.smp.belajar.id</a></p>
-      </div>
-    </section>
-  </main>
+          <div class="col-12">
+            <div class="glass-card p-3">
+              <h5>Ringkasan cepat</h5>
+              <div class="row g-3" id="summaryBoxes">
+                <!-- dynamic boxes -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-  <footer class="site-footer">
-    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgYCPiGhuoDL1mp18rPAMUCt98ADIyg7C297Bx4H53sxM12CtZE89tThO6KUe14s5cR0p6z8DrFQCHUJNXa1tXuFN45DJcNgU0uOW7D00l9cdkRDHUpyHFOfcHtg91R01_CXpPKKXEVS4orocyah8Z_gel0EAg6jrXno_84uYR6UDlxzpmHXOhby8Z0vyQ/s3558/LOGO%20SMP%201%20MOGA.png" alt="Logo" width="30" height="30">
-    <div>
-      <div class="f-title">Yanuar Bayu Triyono, S.I.Pust — Wali Kelas VII-H</div>
-      <div class="f-sub">SMP Negeri 1 Moga</div>
-    </div>
-  </footer>
+      <section id="page-curhat" class="page">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h5>Curhat Siswa</h5>
+          <div>
+            <input id="searchCurhat" class="form-control form-control-sm d-inline-block" placeholder="Cari nama atau teks..." style="width:240px">
+            <button id="exportCurhat" class="btn btn-outline-primary btn-sm ms-2">Export CSV</button>
+          </div>
+        </div>
+        <div class="glass-card p-3">
+          <div class="table-responsive" style="min-height:120px">
+            <table class="table table-striped table-hover" id="tblCurhat">
+              <thead><tr><th>Waktu</th><th>Nama</th><th>Isi Curhat</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
 
-  <!-- Modal container (single) -->
-  <div id="modal" class="modal" style="display:none">
-    <div class="modal-card">
-      <div id="modal-body"></div>
-      <div class="modal-actions">
-        <button class="btn ghost" id="modal-close">Tutup</button>
-      </div>
-    </div>
+      <section id="page-pembinaan" class="page">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h5>Pembinaan</h5>
+          <div>
+            <select id="filterPemStatus" class="form-select form-select-sm d-inline-block" style="width:180px">
+              <option value="ALL">Semua Status</option>
+              <option value="proses">Proses</option>
+              <option value="berhasil">Berhasil</option>
+              <option value="tidak lanjut">Tidak Lanjut</option>
+            </select>
+            <button id="exportPem" class="btn btn-outline-primary btn-sm ms-2">Export CSV</button>
+          </div>
+        </div>
+        <div class="glass-card p-3">
+          <div class="table-responsive">
+            <table class="table table-striped table-hover" id="tblPem">
+              <thead><tr><th>Waktu</th><th>Nama</th><th>Jenis Pelanggaran</th><th>Tindakan</th><th>Target</th><th>Catatan</th><th>Status</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-komunikasi" class="page">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h5>Komunikasi Orang Tua</h5>
+          <div>
+            <select id="filterKomMetode" class="form-select form-select-sm d-inline-block" style="width:160px">
+              <option value="ALL">Semua Metode</option>
+              <option value="WA">WA</option>
+              <option value="Telp">Telp</option>
+              <option value="Tatap muka">Tatap muka</option>
+            </select>
+            <button id="exportKom" class="btn btn-outline-primary btn-sm ms-2">Export CSV</button>
+          </div>
+        </div>
+        <div class="glass-card p-3">
+          <div class="table-responsive">
+            <table class="table table-striped table-hover" id="tblKom">
+              <thead><tr><th>Waktu</th><th>Nama</th><th>Pesan</th><th>Metode</th><th>Dari</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-rekap" class="page">
+        <h5>Rekap Per Siswa</h5>
+        <div class="glass-card p-3">
+          <div id="rekapWrap" class="table-responsive">
+            <table class="table table-bordered" id="tblRekap">
+              <thead><tr><th>Nama</th><th>Total Curhat</th><th>Total Pembinaan</th><th>Total Komunikasi</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
   </div>
 
+  <!-- Bootstrap + dependencies -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- app script -->
   <script src="script.js"></script>
 </body>
 </html>
