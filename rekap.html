@@ -1,41 +1,281 @@
-<h2>Rekap Curhat Siswa</h2>
-<table border="1" id="tabelCurhat">
-  <thead>
-    <tr>
-      <th>Timestamp</th>
-      <th>Nama</th>
-      <th>Kelas</th>
-      <th>Isi Curhat</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Rekap — Wali Kelas VII-H</title>
 
-<script>
-const API_GET = "URL_API_KAMU"; // sama seperti POST
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-async function loadCurhat() {
-  const res = await fetch(API_GET);
-  const data = await res.json();
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  // START FROM INDEX 1 (skip header sheet)
-  let tbody = document.querySelector("#tabelCurhat tbody");
-  tbody.innerHTML = "";
+  <style>
+    :root{
+      --glass-bg: rgba(255,255,255,0.12);
+      --glass-border: rgba(255,255,255,0.18);
+      --blue-700: #0b4fa6;
+      --muted: #7a8aa3;
+      --card-shadow: 0 8px 30px rgba(6,32,58,0.08);
+    }
+    body{
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg,#eaf3ff 0%, #f6fbff 100%);
+      padding: 22px;
+      color: #06203a;
+    }
+    .container-wide{max-width:1100px;margin:0 auto;}
 
-  for (let i = 1; i < data.length; i++) {
-    let row = data[i];
-    let tr = `
-      <tr>
-        <td>${row[0]}</td>
-        <td>${row[1]}</td>
-        <td>${row[2]}</td>
-        <td>${row[3]}</td>
-      </tr>
-    `;
-    tbody.innerHTML += tr;
-  }
-}
+    /* Glassmorphism header */
+    .glass-card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.75), rgba(255,255,255,0.65));
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: var(--card-shadow);
+      border: 1px solid rgba(255,255,255,0.6);
+      backdrop-filter: blur(8px) saturate(120%);
+    }
 
-// load saat halaman dibuka
-loadCurhat();
-</script>
+    h2{color:var(--blue-700);margin-bottom:6px}
+    .muted{color:var(--muted);font-size:14px}
+
+    /* Accordion glass style */
+    .accordion .accordion-item {
+      background: rgba(255,255,255,0.55);
+      border: 1px solid rgba(255,255,255,0.6);
+      border-radius: 12px;
+      margin-bottom:12px;
+      overflow:hidden;
+      box-shadow: 0 6px 22px rgba(6,32,58,0.06);
+    }
+    .accordion-button {
+      background: linear-gradient(90deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
+      border: none;
+      color: #06203a;
+      font-weight:600;
+    }
+    .accordion-button:focus { box-shadow:none; }
+    .accordion-body{
+      background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.5));
+    }
+
+    /* table style */
+    table.tbl{width:100%;border-collapse:collapse}
+    table.tbl thead th{background:transparent;padding:10px 8px;text-align:left;color:var(--blue-700);border-bottom:1px solid rgba(6,32,58,0.06)}
+    table.tbl td{padding:10px 8px;border-bottom:1px dashed rgba(6,32,58,0.04);vertical-align:top}
+    .small-muted{font-size:13px;color:var(--muted)}
+
+    /* responsive */
+    @media(max-width:900px){
+      .container-wide{padding:0 8px}
+    }
+
+    /* spinner center */
+    .centered { display:flex;align-items:center;justify-content:center;padding:18px }
+  </style>
+</head>
+<body>
+  <div class="container-wide">
+    <div class="glass-card mb-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h2>Rekap Data — Kelas VII-H</h2>
+          <div class="muted">Curhat • Pembinaan • Komunikasi Orang Tua</div>
+        </div>
+        <div class="text-end">
+          <a href="index.html" class="btn btn-sm btn-outline-primary">Kembali Dashboard</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass-card p-0">
+      <div class="accordion" id="rekapAccordion">
+
+        <!-- Curhat -->
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingCurhat">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCurhat" aria-expanded="true" aria-controls="collapseCurhat">
+              <span class="material-icons" style="vertical-align:middle;margin-right:8px;color:var(--blue-700)">forum</span>
+              Curhat Siswa
+              <span id="badgeCurhat" class="badge rounded-pill ms-3" style="background:linear-gradient(90deg,var(--blue-700),#1976d2);color:#fff">0</span>
+            </button>
+          </h2>
+          <div id="collapseCurhat" class="accordion-collapse collapse show" aria-labelledby="headingCurhat" data-bs-parent="#rekapAccordion">
+            <div class="accordion-body">
+              <div id="curhatArea">
+                <div class="centered" id="curhatLoader"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>
+                <div id="curhatTableWrap" style="display:none">
+                  <div class="table-responsive">
+                    <table class="tbl" id="curhatTbl">
+                      <thead>
+                        <tr><th width="180">Timestamp</th><th>Nama</th><th>Kelas</th><th>Isi Curhat</th></tr>
+                      </thead>
+                      <tbody></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pembinaan -->
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingPem">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePem" aria-expanded="false" aria-controls="collapsePem">
+              <span class="material-icons" style="vertical-align:middle;margin-right:8px;color:var(--blue-700)">assignment</span>
+              Pembinaan
+              <span id="badgePem" class="badge rounded-pill ms-3" style="background:linear-gradient(90deg,var(--blue-700),#1976d2);color:#fff">0</span>
+            </button>
+          </h2>
+          <div id="collapsePem" class="accordion-collapse collapse" aria-labelledby="headingPem" data-bs-parent="#rekapAccordion">
+            <div class="accordion-body">
+              <div id="pemArea">
+                <div class="centered" id="pemLoader"><div class="spinner-border text-primary" role="status"></div></div>
+                <div id="pemTableWrap" style="display:none">
+                  <div class="table-responsive">
+                    <table class="tbl" id="pemTbl">
+                      <thead>
+                        <tr><th width="180">Timestamp</th><th>Nama</th><th>Kelas</th><th>Target</th><th>Catatan</th></tr>
+                      </thead>
+                      <tbody></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Komunikasi Ortu -->
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingKom">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseKom" aria-expanded="false" aria-controls="collapseKom">
+              <span class="material-icons" style="vertical-align:middle;margin-right:8px;color:var(--blue-700)">phone</span>
+              Komunikasi Orang Tua
+              <span id="badgeKom" class="badge rounded-pill ms-3" style="background:linear-gradient(90deg,var(--blue-700),#1976d2);color:#fff">0</span>
+            </button>
+          </h2>
+          <div id="collapseKom" class="accordion-collapse collapse" aria-labelledby="headingKom" data-bs-parent="#rekapAccordion">
+            <div class="accordion-body">
+              <div id="komArea">
+                <div class="centered" id="komLoader"><div class="spinner-border text-primary" role="status"></div></div>
+                <div id="komTableWrap" style="display:none">
+                  <div class="table-responsive">
+                    <table class="tbl" id="komTbl">
+                      <thead>
+                        <tr><th width="180">Timestamp</th><th>Nama</th><th>Kelas</th><th>No. WA Ortu</th><th>Catatan</th></tr>
+                      </thead>
+                      <tbody></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- accordion -->
+    </div> <!-- glass-card -->
+  </div> <!-- container -->
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // GANTI dengan URL Web App Anda
+    const API_URL = 'URL_API_KAMU';
+
+    // helper: fetch sheet name and render table
+    async function fetchSheet(sheetName) {
+      const url = API_URL + '?sheet=' + encodeURIComponent(sheetName);
+      const res = await fetch(url);
+      if(!res.ok) throw new Error('Gagal fetch ' + sheetName);
+      const data = await res.json(); // 2D array: first row header
+      return data;
+    }
+
+    function populateTableFrom2D(data, tbodyEl, mappingIndexes) {
+      // data: 2D array from sheet; mappingIndexes: array of column indexes to map
+      tbodyEl.innerHTML = '';
+      // skip header (index 0)
+      for (let i = 1; i < data.length; i++) {
+        const row = data[i];
+        const tr = document.createElement('tr');
+        const cells = mappingIndexes.map(idx => escapeHtml(row[idx] || ''));
+        tr.innerHTML = cells.map(c => `<td>${c}</td>`).join('');
+        tbodyEl.appendChild(tr);
+      }
+    }
+
+    function escapeHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    // Curhat: expected sheet columns: [timestamp, nama, kelas, isi_curhat]
+    async function loadCurhat(){
+      try{
+        const data = await fetchSheet('curhat');
+        const tbody = document.querySelector('#curhatTbl tbody');
+        populateTableFrom2D(data, tbody, [0,1,2,3]);
+        document.getElementById('curhatLoader').style.display='none';
+        document.getElementById('curhatTableWrap').style.display='';
+        document.getElementById('badgeCurhat').textContent = (data.length-1);
+      }catch(err){
+        document.getElementById('curhatLoader').innerHTML = '<div class="small-muted">Gagal memuat data curhat.</div>';
+        console.error(err);
+      }
+    }
+
+    // Pembinaan: expected [timestamp, nama, kelas, target, catatan]
+    async function loadPembinaan(){
+      try{
+        const data = await fetchSheet('pembinaan');
+        const tbody = document.querySelector('#pemTbl tbody');
+        populateTableFrom2D(data, tbody, [0,1,2,3,4]);
+        document.getElementById('pemLoader').style.display='none';
+        document.getElementById('pemTableWrap').style.display='';
+        document.getElementById('badgePem').textContent = (data.length-1);
+      }catch(err){
+        document.getElementById('pemLoader').innerHTML = '<div class="small-muted">Gagal memuat data pembinaan.</div>';
+        console.error(err);
+      }
+    }
+
+    // Komunikasi Ortu: expected [timestamp, nama, kelas, hp_ortu, catatan]
+    async function loadKomunikasi(){
+      try{
+        const data = await fetchSheet('komunikasi_ortu');
+        const tbody = document.querySelector('#komTbl tbody');
+        populateTableFrom2D(data, tbody, [0,1,2,3,4]);
+        document.getElementById('komLoader').style.display='none';
+        document.getElementById('komTableWrap').style.display='';
+        document.getElementById('badgeKom').textContent = (data.length-1);
+      }catch(err){
+        document.getElementById('komLoader').innerHTML = '<div class="small-muted">Gagal memuat data komunikasi.</div>';
+        console.error(err);
+      }
+    }
+
+    // load when accordion opens (to save initial bandwidth)
+    const collapseCurhat = document.getElementById('collapseCurhat');
+    const collapsePem = document.getElementById('collapsePem');
+    const collapseKom = document.getElementById('collapseKom');
+
+    collapseCurhat.addEventListener('shown.bs.collapse', ()=> {
+      if(document.querySelector('#curhatTbl tbody').children.length === 0) loadCurhat();
+    });
+    collapsePem.addEventListener('shown.bs.collapse', ()=> {
+      if(document.querySelector('#pemTbl tbody').children.length === 0) loadPembinaan();
+    });
+    collapseKom.addEventListener('shown.bs.collapse', ()=> {
+      if(document.querySelector('#komTbl tbody').children.length === 0) loadKomunikasi();
+    });
+
+    // initial: load curhat (first open by default)
+    document.addEventListener('DOMContentLoaded', ()=> {
+      loadCurhat();
+    });
+
+  </script>
+</body>
+</html>
