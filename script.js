@@ -1,7 +1,7 @@
 /* Dashboard script — fetch data from Google Apps Script WebApp (doGet) */
 
 /* ========== CONFIG ========== */
-const API_URL = 'PASTE_WEBAPP_URL_HERE'; // <-- GANTI INI dengan Web App URL
+const API_URL = 'https://script.google.com/macros/s/AKfycbydG2BUKgHFc1G-S1u5aKJNW8NgUZ5K6GIv2ZArUhlhYHrwuAIjRB2lhe4mq277ig/exec'; // <-- GANTI INI dengan Web App URL
 const SHEETS = {
   curhat: 'curhat',
   pembinaan: 'pembinaan',
@@ -310,3 +310,4 @@ document.addEventListener('DOMContentLoaded', ()=> {
 
 /* ========== HELPERS ========== */
 function escapeHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
